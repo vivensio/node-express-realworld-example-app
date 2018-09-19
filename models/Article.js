@@ -5,7 +5,7 @@ var User = mongoose.model('User');
 
 var ArticleSchema = new mongoose.Schema({
   slug: {type: String, lowercase: true, unique: true},
-  title: String,
+  title: {type: String,required: [true, "can't be blank"]},
   description: String,
   body: String,
   favoritesCount: {type: Number, default: 0},
