@@ -41,11 +41,11 @@ router.put('/user', auth.required, function(req, res, next){
 
 router.post('/users/login', function(req, res, next){
   if(!req.body.user.email){
-    return res.status(422).json({errors: {email: "can't be blank"}});
+    return res.status(422).json({errors: {email: ["can't be blank"]}});
   }
 
   if(!req.body.user.password){
-    return res.status(422).json({errors: {password: "can't be blank"}});
+    return res.status(422).json({errors: {password: ["can't be blank"]}});
   }
 
   passport.authenticate('local', {session: false}, function(err, user, info){
@@ -69,7 +69,14 @@ router.post('/users', function(req, res, next){
 
   user.save().then(function(){
     return res.json({user: user.toAuthJSON()});
-  }).catch(next);
+  }).catch(function(err) {
+    const errors = {};
+    const keys = Object.keys(err.errors);
+    keys.forEach(key => {
+      errors[key] = [err.errors[key].message];
+    });
+    res.status(422).json({errors});
+  });
 });
 
 module.exports = router;

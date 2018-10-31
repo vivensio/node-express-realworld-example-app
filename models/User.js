@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 var secret = require('../config').secret;
@@ -14,8 +13,6 @@ var UserSchema = new mongoose.Schema({
   hash: String,
   salt: String
 }, {timestamps: true});
-
-UserSchema.plugin(uniqueValidator, {message: 'is already taken.'});
 
 UserSchema.methods.validPassword = function(password) {
   var hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');

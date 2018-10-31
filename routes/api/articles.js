@@ -171,7 +171,14 @@ router.put('/:article', auth.required, function(req, res, next) {
 
       req.article.save().then(function(article){
         return res.json({article: article.toJSONFor(user)});
-      }).catch(next);
+      }).catch(function(err) {
+        const errors = {};
+        const keys = Object.keys(err.errors);
+        keys.forEach(key => {
+          errors[key] = [err.errors[key].message];
+        });
+        res.status(422).json({errors});
+      });
     } else {
       return res.sendStatus(403);
     }
