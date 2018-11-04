@@ -10,6 +10,7 @@ var http = require('http'),
     mongoose = require('mongoose');
 
 var isProduction = process.env.NODE_ENV === 'production';
+var isCypress = process.env.NODE_ENV === 'cypress';
 
 // Create global app object
 var app = express();
@@ -32,6 +33,9 @@ if (!isProduction) {
 
 if(isProduction){
   mongoose.connect(process.env.MONGODB_URI);
+} else if (isCypress) {
+  console.log('connecting to test db...');
+  mongoose.connect('mongodb://localhost/conduit-test');
 } else {
   mongoose.connect('mongodb://localhost/conduit');
   mongoose.set('debug', true);
